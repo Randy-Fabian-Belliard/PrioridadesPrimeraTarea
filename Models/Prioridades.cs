@@ -9,7 +9,7 @@ namespace PrioridadesPrimeraTarea.Models {
     public int PrioridadId { get; set; }
     [Required(ErrorMessage = "Campo Obligatorio")]
     public string Descripcion { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Campo Obligatorio")]
+    [Range(1, 29, ErrorMessage = "Los días de compromiso deben ser mayores que cero y menores que 30.")]
     public int DiasCompromiso{ get; set; }
 
     }

@@ -47,11 +47,27 @@ namespace PrioridadesPrimeraTarea.BLL
             else
                 return this.Modificar(prioridades);
         }
-        public bool Eliminar(Prioridades prioridades)
+      /*  public bool Eliminar(Prioridades prioridades)
         {
             _contexto.Entry(prioridades).State = EntityState.Deleted;
             return _contexto.SaveChanges() > 0;
+        }*/
+
+        public bool Eliminar(Prioridades prioridades){
+            bool changes = false;
+            try{
+                _contexto.Entry(prioridades).State = EntityState.Deleted;
+                changes = _contexto.SaveChanges() > 0;
+                _contexto.Prioridades.Entry(prioridades).State = EntityState.Detached;
+                return changes;
+            }
+            catch(Exception){
+                return false;
         }
+    }
+         
+
+
         public Prioridades? BuscarPorDescripcion(string? descripcion)
         {
             return _contexto.Prioridades.SingleOrDefault(p => p.Descripcion == descripcion);
