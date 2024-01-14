@@ -1,0 +1,112 @@
+@page "/RegistroPrioridades";
+@rendermode InteractiveServer
+@inject PrioridadesBLL prioridadesBLL;
+
+<EditForm Model="prioridades" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h1>Registro de Prioridades</h1>
+        </div>
+        <div class="card-body">
+            <label>ID de prioridad:</label>
+            <div class="input-group">
+                <InputNumber @bind-Value="prioridades.PrioridadId" class="custom-input"></InputNumber>
+                <button type="button" class="btn btn-outline-primary" @onclick="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </button>
+               
+            </div>
+            <div>
+                <label>Descripci&oacute;n:</label>
+                <InputText @bind-Value="prioridades.Descripcion" class="form-control"></InputText>
+                <ValidationMessage For="@(() => prioridades.Descripcion)" />
+            </div>
+            <div>
+                <label>D&iacute;as de compromiso:</label>
+                <InputNumber @bind-Value="prioridades.DiasCompromiso" class="form-control"></InputNumber>
+                <ValidationMessage For="@(() => prioridades.DiasCompromiso)" />
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-fill" viewBox="0 0 16 16">
+                    <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2z" />
+                </svg>Nuevo
+            </button>
+
+            <button type="submit" class="btn btn-outline-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1z" />
+                </svg>Guardar
+            </button>
+
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                   <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+             </svg> Eliminar
+
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private string prioridadesForm = "prioridadesForm";
+    [Parameter]
+    public int PrioridadId { get; set; }
+
+    public Prioridades prioridades = new Prioridades();
+    private bool descripcionExistente = false;
+
+    protected override void OnInitialized()
+    {
+        if (PrioridadId > 0)
+        {
+            prioridades.PrioridadId = PrioridadId;
+            Buscar();
+        }
+    }
+    public void Buscar()
+    {
+        var prioridadEncontrada = prioridadesBLL.Buscar(prioridades.PrioridadId);
+
+        if (prioridadEncontrada != null)
+            this.prioridades = prioridadEncontrada;
+    }
+    public bool Validar()
+    {
+        descripcionExistente = false; 
+
+        var prioridadExistente = prioridadesBLL.BuscarPorDescripcion(prioridades.Descripcion);
+
+        if (prioridadExistente != null && prioridadExistente.PrioridadId != prioridades.PrioridadId)
+        {
+            descripcionExistente = true;
+            return false;
+        }
+        return !string.IsNullOrEmpty(prioridades.Descripcion) && !(prioridades.DiasCompromiso < 0);
+    }
+    public void Nuevo()
+    {
+        this.prioridades = new Prioridades();
+        descripcionExistente = false;
+    }
+    public void Guardar()
+    {
+        if (Validar() && prioridadesBLL.Guardar(this.prioridades))
+        {
+            Nuevo();
+        }
+    }
+    public void Eliminar()
+    {
+        if (prioridadesBLL.Eliminar(this.prioridades))
+        {
+            Nuevo();
+        }
+    }
+}
+
