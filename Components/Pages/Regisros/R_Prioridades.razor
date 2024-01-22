@@ -61,24 +61,26 @@
     public Prioridades prioridades = new Prioridades();
     private bool descripcionExistente = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (PrioridadId > 0)
         {
             prioridades.PrioridadId = PrioridadId;
-            Buscar();
+            await Buscar();
         }
     }
-    public void Buscar()
+
+    public async Task Buscar()
     {
-        var prioridadEncontrada = prioridadesBLL.Buscar(prioridades.PrioridadId);
+        var prioridadEncontrada = await prioridadesBLL.Buscar(prioridades.PrioridadId);
 
         if (prioridadEncontrada != null)
             this.prioridades = prioridadEncontrada;
     }
+
     public bool Validar()
     {
-        descripcionExistente = false; 
+        descripcionExistente = false;
 
         var prioridadExistente = prioridadesBLL.BuscarPorDescripcion(prioridades.Descripcion);
 
@@ -89,21 +91,24 @@
         }
         return !string.IsNullOrEmpty(prioridades.Descripcion) && !(prioridades.DiasCompromiso < 0);
     }
+
     public void Nuevo()
     {
         this.prioridades = new Prioridades();
         descripcionExistente = false;
     }
-    public void Guardar()
+
+    public async Task Guardar()
     {
-        if (Validar() && prioridadesBLL.Guardar(this.prioridades))
+        if (Validar() && await prioridadesBLL.Guardar(this.prioridades))
         {
             Nuevo();
         }
     }
-    public void Eliminar()
+
+    public async Task Eliminar()
     {
-        if (prioridadesBLL.Eliminar(this.prioridades))
+        if (await prioridadesBLL.Eliminar(this.prioridades))
         {
             Nuevo();
         }

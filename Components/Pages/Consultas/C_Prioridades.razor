@@ -5,12 +5,12 @@
     <thead>
         <tr>
             <th>Prioridad ID</th>
-            <th>Descripción</th>
-            <th>Días de compromiso</th>
+            <th>Descripciï¿½n</th>
+            <th>Dï¿½as de compromiso</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in prioridadesBLL.Listar(p => true))
+        @foreach (var item in prioridades)
         {
             <tr>
                 <td>@item.PrioridadId</td>
@@ -24,8 +24,8 @@
 @code {
     public List<Prioridades> prioridades { get; set; } = new List<Prioridades>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {  
-        prioridades = prioridadesBLL.Listar(p => true);
+        prioridades = await prioridadesBLL.Listar(p => true);
     }
 }

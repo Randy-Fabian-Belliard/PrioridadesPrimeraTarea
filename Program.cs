@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContext<Contexto>(opcion => opcion.UseSqlite(ConStr));
  builder.Services.AddScoped<PrioridadesBLL>();
+builder.Services.AddScoped<ClientesBLL>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

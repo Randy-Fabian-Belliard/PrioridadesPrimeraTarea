@@ -1,0 +1,138 @@
+@page "/R_Clientes"
+@rendermode InteractiveServer
+@inject ClientesBLL ClientesBLL
+
+<EditForm Model="cliente" OnValidSubmit="Guardar"> 
+    <DataAnnotationsValidator/>
+    <div class ="card">
+
+        <div class="card-header">
+            <h1>Registro de clientes</h1>
+        </div>
+
+    <div class="card-body">
+                <!-- Para el Id -->
+                <label class="form-label">Cliente Id</label>
+                <div id="inputId" class="input-group">
+                <InputNumber @bind-Value="cliente.ClienteId" class="custom-input"></InputNumber>
+                <button type="button" class="btn btn-outline-primary" @onclick="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </button>  
+            </div>
+
+            </div>
+
+                <!-- Para el nombre -->
+            
+                <label class="form-label">Nombre</label>
+                <InputText @bind-Value="cliente.Nombres" class="form-control" />
+                <ValidationMessage For="@(() => cliente.Nombres)" /> 
+
+                <!-- Para el telefono -->
+                <label class="form-label">Teléfono</label>
+                <InputText @bind-Value="cliente.Telefono" class="form-control"/>
+                <ValidationMessage For="@(() => cliente.Telefono)" />
+
+                <!-- Para el celular -->
+                <label class="form-label">Celular</label>
+                <InputText @bind-Value="cliente.Celular" class="form-control"/>
+                <ValidationMessage For="@(() => cliente.Celular)" />
+
+                <!-- Para el Rnc -->
+                <label class="form-label">Rnc</label>
+                <InputText @bind-Value="cliente.Rnc" class="form-control"placeholder="Ejemplo: 001-1234567-8"/>
+                <ValidationMessage For="@(() => cliente.Rnc)" />
+
+                <!-- Para el Email -->
+                <label class="form-label">Email</label>
+                <InputText @bind-Value="cliente.Email" class="form-control"/>
+                <ValidationMessage For="@(() => cliente.Email)" />
+
+                <!-- Para la direcion -->
+                <label class="form-label">Dirección</label>
+                <InputText @bind-Value="cliente.Direccion" class="form-control"/>
+                <ValidationMessage For="@(() => cliente.Direccion)" />
+
+
+        
+
+        <div class="card-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-fill" viewBox="0 0 16 16">
+                    <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2m5.5 1.5v2a1 1 0 0 0 1 1h2z" />
+                </svg>Nuevo
+            </button>
+
+            <button type="submit" class="btn btn-outline-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
+                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1z" />
+                </svg>Guardar
+            </button>
+
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                   <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+             </svg> Eliminar
+            </button>
+        </div>
+
+      </div>  
+</EditForm>
+
+@code{
+
+    public Clientes cliente {get; set; } = new Clientes();
+    void Guardar()
+    {
+        if(Validar())
+        {
+            if(ClientesBLL.Guardar(cliente))
+                Nuevo();
+        }
+    }
+
+    void Eliminar()
+    {
+        if (ClientesBLL.Eliminar(cliente)){
+            this.Nuevo();
+        }   
+    }
+    void Nuevo()
+    {
+        cliente = new Clientes();
+    }
+    bool Validar()
+    {
+        if((String.IsNullOrEmpty(cliente.Nombres) ))
+        {
+            return false;
+        }
+
+        else if((String.IsNullOrEmpty(cliente.Direccion))){
+            return false;
+        }
+        else{
+            return true;
+        }
+        
+    }
+  void Buscar(){
+
+        var clienteEncontrado = ClientesBLL.Buscar(cliente.ClienteId);
+
+        if(clienteEncontrado != null)
+        {
+
+            this.cliente = clienteEncontrado; 
+        }
+    }
+
+    void ToUpperText(string value)
+    {
+        cliente.Direccion = value.ToUpper();
+    }
+
+
+}
