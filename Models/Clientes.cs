@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace PrioridadesPrimeraTarea.Models { 
@@ -20,6 +21,9 @@ namespace PrioridadesPrimeraTarea.Models {
     [Required(ErrorMessage = "Campo Obligatorio")]
        
     public string ? Direccion{ get; set; }
+
+    [ForeignKey("ClienteId")]
+    public ICollection<Tickets> Tickets { get; set; } = new List<Tickets>();
 
     }
     }
